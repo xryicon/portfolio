@@ -30,5 +30,3 @@ npm run deploy
 ```
 
 The Cloudflare configuration is in `wrangler.jsonc`. The contact form is active and stores enquiries privately.
-
-

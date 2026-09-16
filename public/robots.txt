@@ -3,3 +3,4 @@ Allow: /
 Disallow: /api/
 
 Sitemap: https://ryndendesign-portfolio.xryicon.workers.dev/sitemap.xml
+Disallow: /admin

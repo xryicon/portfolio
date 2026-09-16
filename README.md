@@ -34,3 +34,9 @@ The Cloudflare configuration is in `wrangler.jsonc`. The contact form is active 
 ## Search visibility
 
 The site includes a descriptive page title and meta description, canonical URL, social sharing image, WebSite structured data, robots.txt and a single-page sitemap. These currently use the Cloudflare Workers address. Update all canonical, sitemap and social URLs when a custom domain is connected.
+
+## Private enquiry inbox
+
+Open `/admin` on the live site and sign in with the admin password supplied privately to the site owner. The Worker stores only a SHA-256 hash of this high-entropy password as a Cloudflare secret, and signs an eight-hour, HttpOnly, Secure, SameSite=Strict session cookie with a separate secret. Login attempts are rate-limited. The inbox lists the latest 50 enquiries per page from Supabase and supports searching the current page, refreshing, replying by email, and signing out. The admin page and API responses are marked not to be indexed or cached.
+
+The credentials are `ADMIN_PASSWORD_HASH` and `ADMIN_SESSION_SECRET` in Cloudflare Worker secrets. To rotate access, create a new strong random password, hash it with SHA-256, and replace `ADMIN_PASSWORD_HASH` through Wrangler secret input. Rotate `ADMIN_SESSION_SECRET` to invalidate existing sessions. Do not commit either secret or the plain password.

@@ -6,13 +6,23 @@
     "directory": "./public",
     "binding": "ASSETS",
     "run_worker_first": [
-      "/api/*"
+      "/api/*",
+      "/admin",
+      "/admin/"
     ]
   },
   "ratelimits": [
     {
       "name": "CONTACT_RATE_LIMIT",
       "namespace_id": "9017",
+      "simple": {
+        "limit": 5,
+        "period": 60
+      }
+    },
+    {
+      "name": "ADMIN_RATE_LIMIT",
+      "namespace_id": "9018",
       "simple": {
         "limit": 5,
         "period": 60

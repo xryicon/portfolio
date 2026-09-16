@@ -30,3 +30,7 @@ npm run deploy
 ```
 
 The Cloudflare configuration is in `wrangler.jsonc`. The contact form is active and stores enquiries privately.
+
+## Search visibility
+
+The site includes a descriptive page title and meta description, canonical URL, social sharing image, WebSite structured data, robots.txt and a single-page sitemap. These currently use the Cloudflare Workers address. Update all canonical, sitemap and social URLs when a custom domain is connected.

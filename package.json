@@ -1,0 +1,26 @@
+{
+  "name": "ryndendesign-portfolio",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xryicon/portfolio.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/xryicon/portfolio/issues"
+  },
+  "homepage": "https://github.com/xryicon/portfolio#readme",
+  "devDependencies": {
+    "supabase": "^2.117.0",
+    "wrangler": "^4.132.0"
+  }
+}

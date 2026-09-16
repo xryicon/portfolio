@@ -1,6 +1,6 @@
 # ryndendesign portfolio
 
-A responsive portfolio for ryndendesign, featuring [InsurancePro](https://www.insurancepro.es/) and a Hole in the Wall Mexican restaurant website concept.
+A responsive portfolio for ryndendesign, featuring [InsurancePro](https://www.insurancepro.es/).
 
 ## Local preview
 

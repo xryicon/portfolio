@@ -59,10 +59,12 @@ export default {
         },
         body: JSON.stringify({ name, email, message })
       });
-      if (!saved.ok) return respond(502, { error: 'Contact service unavailable' });
+      if (!saved.ok) { console.error('Supabase insert failed', saved.status); return respond(502, { error: 'Contact service unavailable' }); }
       return respond(201, { ok: true });
     } catch {
       return respond(502, { error: 'Contact service unavailable' });
     }
   }
 };
+
+

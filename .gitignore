@@ -2,3 +2,4 @@ node_modules/
 .wrangler/
 .dev.vars*
 supabase/functions/.env
+supabase/.temp/

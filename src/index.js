@@ -10,23 +10,30 @@ async function authorized(req,env){
   return !!m&&Number(m[1])>Date.now()/1000&&equal(m[2],await sign(m[1],env.ADMIN_SESSION_SECRET));
 }
 async function contact(req,env,url){
-  if(req.method!=='POST')return reply(405,{error:'Method not allowed'});
   const origin=req.headers.get('Origin');
-  if(origin&&origin!==url.origin)return reply(403,{error:'Invalid origin'});
-  if(!req.headers.get('Content-Type')?.startsWith('application/json'))return reply(415,{error:'Expected JSON'});
-  if(Number(req.headers.get('Content-Length')||0)>8192)return reply(413,{error:'Message too large'});
-  let d;try{const raw=await req.text();if(raw.length>8192)return reply(413,{error:'Message too large'});d=JSON.parse(raw)}catch{return reply(400,{error:'Invalid request'})}
-  if(d.website)return reply(200,{ok:true});
+  const allowed=origin===url.origin||origin==='https://www.ryndendesigns.es'||origin==='https://ryndendesigns.es';
+  const cors=origin&&origin!==url.origin&&allowed?{'Access-Control-Allow-Origin':origin,Vary:'Origin'}:{};
+  const send=(status,data)=>reply(status,data,cors);
+  if(req.method==='OPTIONS'){
+    if(!allowed)return reply(403,{error:'Invalid origin'});
+    return new Response(null,{status:204,headers:{...cors,'Access-Control-Allow-Methods':'POST, OPTIONS','Access-Control-Allow-Headers':'Content-Type','Access-Control-Max-Age':'600'}});
+  }
+  if(req.method!=='POST')return send(405,{error:'Method not allowed'});
+  if(origin&&!allowed)return reply(403,{error:'Invalid origin'});
+  if(!req.headers.get('Content-Type')?.startsWith('application/json'))return send(415,{error:'Expected JSON'});
+  if(Number(req.headers.get('Content-Length')||0)>8192)return send(413,{error:'Message too large'});
+  let d;try{const raw=await req.text();if(raw.length>8192)return send(413,{error:'Message too large'});d=JSON.parse(raw)}catch{return send(400,{error:'Invalid request'})}
+  if(d.website)return send(200,{ok:true});
   const name=String(d.name||'').trim(),email=String(d.email||'').trim(),message=String(d.message||'').trim();
-  if(!name||name.length>120||/[\r\n]/.test(name)||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||email.length>254||message.length<20||message.length>5000)return reply(400,{error:'Please check your details'});
+  if(!name||name.length>120||/[\r\n]/.test(name)||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||email.length>254||message.length<20||message.length>5000)return send(400,{error:'Please check your details'});
   const {success}=await env.CONTACT_RATE_LIMIT.limit({key:req.headers.get('CF-Connecting-IP')||'unknown'});
-  if(!success)return reply(429,{error:'Please wait before sending another message'});
-  if(!env.SUPABASE_URL||!env.SUPABASE_SECRET_KEY)return reply(503,{error:'Contact service unavailable'});
+  if(!success)return send(429,{error:'Please wait before sending another message'});
+  if(!env.SUPABASE_URL||!env.SUPABASE_SECRET_KEY)return send(503,{error:'Contact service unavailable'});
   try{
     const res=await fetch(new URL('/rest/v1/contact_enquiries',env.SUPABASE_URL),{method:'POST',headers:{apikey:env.SUPABASE_SECRET_KEY,'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({name,email,message})});
-    if(!res.ok){console.error('Supabase insert failed',res.status);return reply(502,{error:'Contact service unavailable'})}
-    return reply(201,{ok:true});
-  }catch{return reply(502,{error:'Contact service unavailable'})}
+    if(!res.ok){console.error('Supabase insert failed',res.status);return send(502,{error:'Contact service unavailable'})}
+    return send(201,{ok:true});
+  }catch{return send(502,{error:'Contact service unavailable'})}
 }
 async function admin(req,env,url){
   if(url.pathname==='/api/admin/login'){

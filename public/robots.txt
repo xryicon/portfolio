@@ -2,5 +2,5 @@ User-agent: *
 Allow: /
 Disallow: /api/
 
-Sitemap: https://ryndendesign-portfolio.xryicon.workers.dev/sitemap.xml
+Sitemap: https://www.ryndendesigns.es/sitemap.xml
 Disallow: /admin

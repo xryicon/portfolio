@@ -40,3 +40,9 @@ The site includes a descriptive page title and meta description, canonical URL, 
 Open `/admin` on the live site and sign in with the admin password supplied privately to the site owner. The Worker stores only a SHA-256 hash of this high-entropy password as a Cloudflare secret, and signs an eight-hour, HttpOnly, Secure, SameSite=Strict session cookie with a separate secret. Login attempts are rate-limited. The inbox lists the latest 50 enquiries per page from Supabase and supports searching the current page, refreshing, replying by email, and signing out. The admin page and API responses are marked not to be indexed or cached.
 
 The credentials are `ADMIN_PASSWORD_HASH` and `ADMIN_SESSION_SECRET` in Cloudflare Worker secrets. To rotate access, create a new strong random password, hash it with SHA-256, and replace `ADMIN_PASSWORD_HASH` through Wrangler secret input. Rotate `ADMIN_SESSION_SECRET` to invalidate existing sessions. Do not commit either secret or the plain password.
+
+## one.com SFTP hosting
+
+The public portfolio is also hosted at https://www.ryndendesigns.es/ in the one.com webroot for that domain. Upload `public/index.html`, `public/cafe-preview.jpg`, `public/og-card.jpg`, `public/robots.txt`, and `public/sitemap.xml` to the webroot, along with `deploy/sftp/.htaccess`. Do not upload `public/admin.html` or Worker source files to one.com. The contact form on the SFTP-hosted page calls the existing Cloudflare Worker endpoint, which stores enquiries in Supabase. The private inbox stays at the Worker `/admin` URL.
+
+The one.com `.htaccess` redirects the apex domain and HTTP traffic to the canonical HTTPS www address. The Worker accepts contact requests only from its own origin and the two ryndendesigns.es origins. Update these origins if the public domain changes.
